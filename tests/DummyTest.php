@@ -7,13 +7,17 @@ use RuntimeException;
 
 class DummyTest extends TestCase
 {
-    public function testSuccessful(): void
+    /**
+     * @testWith ["test", 1]
+     */
+    public function testSuccessful(string $_input, int $_length): void
     {
         $this->assertLessThan(2, rand(0, 1));
     }
 
     public function testFailure(): void
     {
+        sleep(2);
         $this->fail('oops');
     }
 
