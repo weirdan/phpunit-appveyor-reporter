@@ -14,8 +14,6 @@ use PHPUnit\Runner\BeforeTestHook;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use RuntimeException;
-use Symfony\Component\Console\Logger\ConsoleLogger;
-use Symfony\Component\Console\Output\ConsoleOutput;
 use Weirdan\PhpUnitAppVeyorReporter\Reporter\Factory as ReporterFactory;
 
 final class Listener implements
@@ -35,7 +33,7 @@ final class Listener implements
 
     public function __construct()
     {
-        $this->logger = new ConsoleLogger(new ConsoleOutput());
+        $this->logger = new Logger();
         $this->reporter = (new ReporterFactory($this->logger))();
     }
 

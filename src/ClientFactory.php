@@ -26,6 +26,7 @@ final class ClientFactory
     public function __invoke(): ServiceClientInterface
     {
         $stack = HandlerStack::create();
+        /** @psalm-suppress MixedArgumentTypeCoercion */
         $stack->push(Middleware::log(
             $this->logger,
             new MessageFormatter(MessageFormatter::DEBUG)
