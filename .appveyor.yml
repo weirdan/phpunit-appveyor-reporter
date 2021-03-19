@@ -38,6 +38,7 @@ install:
   - ps: Write-Output "error_reporting=E_ALL" | Out-File -Encoding "ASCII" -Append "C:\php\php.ini"
 
   - ps: php -r "phpinfo(INFO_GENERAL);"
+  - ps: php -m
 
   - ps: InstallComposer
 
