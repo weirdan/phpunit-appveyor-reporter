@@ -33,7 +33,7 @@ final class Listener implements
 
     public function __construct()
     {
-        $this->logger = new Logger();
+        $this->logger = (new LoggerFactory())();
         $this->reporter = (new ReporterFactory($this->logger))();
     }
 
