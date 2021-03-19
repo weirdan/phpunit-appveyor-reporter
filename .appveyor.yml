@@ -23,14 +23,22 @@ install:
   - ps: (new-object Net.WebClient).DownloadString("https://raw.githubusercontent.com/sergeyklay/php-appveyor/1.3.0/php-appveyor.psm1") | iex
 
   - ps: InstallPhp -Version "8.0" -BuildType "nts-Win32" -VC 16 -Platform $Env:PLATFORM
+
   - ps: EnablePhpExtension -Name "curl"
   - ps: EnablePhpExtension -Name "openssl"
   - ps: EnablePhpExtension -Name "mbstring"
   - ps: EnablePhpExtension -Name "fileinfo"
+
+  - ps: appveyor DownloadFile https://curl.haxx.se/ca/cacert.pem -FileName "C:\php\cacert.pem"
+  - ps: Write-Output 'curl.cainfo="C:/php/cacert.pem"'| Out-File -Encoding "ASCII" -Append "C:\php\php.ini"
+  - ps: Write-Output 'openssl.cafile="C:/php/cacert.pem"' | Out-File -Encoding "ASCII" -Append "C:\php\php.ini"
+
   - ps: Write-Output "zend.assertions=1" | Out-File -Encoding "ASCII" -Append "C:\php\php.ini"
   - ps: Write-Output "assert.exception=On" | Out-File -Encoding "ASCII" -Append "C:\php\php.ini"
   - ps: Write-Output "error_reporting=E_ALL" | Out-File -Encoding "ASCII" -Append "C:\php\php.ini"
+
   - ps: php -r "phpinfo(INFO_GENERAL);"
+
   - ps: InstallComposer
 
 build_script:
