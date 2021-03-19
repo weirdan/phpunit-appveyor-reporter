@@ -34,8 +34,10 @@ install:
   - ps: InstallComposer
 
 build_script:
-  - ps: if ($Env:DEPS -eq "low") { ./composer update --no-progress --prefer-lowest --prefer-stable 2>&1 }
-  - ps: if ($Env:DEPS -eq "high") { ./composer update --no-progress 2>&1 }
+  # PowerShell treats *any* output to stderr as error so we need to run composer update with cmd instead
+  - ps: if ($Env:DEPS -eq "low") { $Env:DEPS_FLAGS = "--prefer-lowest --prefer-stable" }
+  - ps: if ($Env:DEPS -eq "high") { $Env:DEPS_FLAGS = "" }
+  - composer update %DEPS_FLAGS% --no-progress
   - ps: ls -l vendor/bin
 
 ## Run the actual test
