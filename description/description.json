@@ -27,7 +27,7 @@
                 },
                 "durationMilliseconds": {
                     "location": "json",
-                    "type": "int",
+                    "type": "integer",
                     "required": false
                 },
                 "ErrorMessage": {
@@ -79,7 +79,7 @@
                 },
                 "durationMilliseconds": {
                     "location": "json",
-                    "type": "int",
+                    "type": "integer",
                     "required": false
                 },
                 "ErrorMessage": {
