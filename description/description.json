@@ -1,0 +1,108 @@
+{
+    "operations": {
+        "addTest": {
+            "httpMethod": "POST",
+            "uri": "api/tests",
+            "parameters": {
+                "testName": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "testFramework": {
+                    "location": "json",
+                    "type": "string",
+                    "required":false,
+                    "default": "PHPUnit"
+                },
+                "fileName": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "outcome": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                },
+                "durationMilliseconds": {
+                    "location": "json",
+                    "type": "int",
+                    "required": false
+                },
+                "ErrorMessage": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                },
+                "ErrorStackTrace": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                },
+                "StdOut": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                }, 
+                "StdErr": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                } 
+            }
+        },
+        "updateTest": {
+            "httpMethod": "PUT",
+            "uri": "api/tests",
+            "parameters": {
+                "testName": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "testFramework": {
+                    "location": "json",
+                    "type": "string",
+                    "required":false,
+                    "default": "PHPUnit"
+                },
+                "fileName": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "outcome": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                },
+                "durationMilliseconds": {
+                    "location": "json",
+                    "type": "int",
+                    "required": false
+                },
+                "ErrorMessage": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                },
+                "ErrorStackTrace": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                },
+                "StdOut": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                }, 
+                "StdErr": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                } 
+            }
+        }
+    }
+}

@@ -6,13 +6,23 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Command\Guzzle\Description;
 use GuzzleHttp\Command\Guzzle\GuzzleClient;
 use GuzzleHttp\Command\ServiceClientInterface;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\MessageFormatter;
+use GuzzleHttp\Middleware;
 use RuntimeException;
+use Symfony\Component\Console\Logger\ConsoleLogger;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 final class ClientFactory
 {
     public function __invoke(): ServiceClientInterface
     {
-        $httpClient = new Client();
+        $stack = HandlerStack::create();
+        $stack->push(Middleware::log(
+            new ConsoleLogger(new ConsoleOutput()),
+            new MessageFormatter(MessageFormatter::DEBUG)
+        ));
+        $httpClient = new Client(['handler' => $stack]);
         $client = new GuzzleClient(
             $httpClient,
             new Description(
@@ -38,7 +48,7 @@ final class ClientFactory
             throw new RuntimeException('Invalid service description read from ' . $file);
         }
 
-        $description['baseUrl'] = getenv('APPVEYOR_API_URL');
+        $description['baseUri'] = getenv('APPVEYOR_API_URL');
 
         return $description;
     }
