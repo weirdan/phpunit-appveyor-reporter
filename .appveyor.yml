@@ -34,8 +34,8 @@ install:
   - ps: InstallComposer
 
 build_script:
-  - ps: if ($Env:DEPS -eq "low") { composer update --no-progress --prefer-lowest --prefer-stable }
-  - ps: if ($Env:DEPS -eq "high") { composer update --no-progress }
+  - ps: if ($Env:DEPS -eq "low") { ./composer update --no-progress --prefer-lowest --prefer-stable }
+  - ps: if ($Env:DEPS -eq "high") { ./composer update --no-progress }
   - ps: ls -l vendor/bin
 
 ## Run the actual test
