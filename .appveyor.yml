@@ -46,10 +46,10 @@ build_script:
   - ps: if ($Env:DEPS -eq "low") { $Env:DEPS_FLAGS = "--prefer-lowest --prefer-stable" }
   - ps: if ($Env:DEPS -eq "high") { $Env:DEPS_FLAGS = "" }
   - composer update %DEPS_FLAGS% --no-progress
-  - ps: ls -l vendor/bin
 
 ## Run the actual test
 test_script:
   - vendor/bin/composer-require-checker
   - vendor/bin/psalm --shepherd
+  # `|| (call )` is used to suppress PHPUnit failure so that the build is marked as successful even though PHPUnit failed
   - vendor/bin/phpunit || (call )
