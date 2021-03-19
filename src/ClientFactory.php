@@ -9,17 +9,25 @@ use GuzzleHttp\Command\ServiceClientInterface;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 final class ClientFactory
 {
+    private LoggerInterface $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     public function __invoke(): ServiceClientInterface
     {
         $stack = HandlerStack::create();
         $stack->push(Middleware::log(
-            new ConsoleLogger(new ConsoleOutput()),
+            $this->logger,
             new MessageFormatter(MessageFormatter::DEBUG)
         ));
         $httpClient = new Client(['handler' => $stack]);

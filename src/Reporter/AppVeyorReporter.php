@@ -3,28 +3,36 @@
 namespace Weirdan\PhpUnitAppVeyorReporter\Reporter;
 
 use GuzzleHttp\Command\ServiceClientInterface;
+use Psr\Log\LoggerInterface;
+use Throwable;
 use Weirdan\PhpUnitAppVeyorReporter\Reporter;
 
 final class AppVeyorReporter implements Reporter
 {
     private ServiceClientInterface $client;
+    private LoggerInterface $logger;
 
-    public function __construct(ServiceClientInterface $client)
+    public function __construct(ServiceClientInterface $client, LoggerInterface $logger)
     {
         $this->client = $client;
+        $this->logger = $logger;
     }
 
     public function reportStarted(string $test, string $filename): void
     {
-        $this->client->execute($this->client->getCommand(
-            'addTest',
-            [
-                'testName' => $test,
-                'testFramework' => 'PHPUnit',
-                'fileName' => $filename,
-                'outcome' => Reporter::OUTCOME_RUNNING,
-            ]
-        ));
+        try {
+            $this->client->execute($this->client->getCommand(
+                'addTest',
+                [
+                    'testName' => $test,
+                    'testFramework' => 'PHPUnit',
+                    'fileName' => $filename,
+                    'outcome' => Reporter::OUTCOME_RUNNING,
+                ]
+            ));
+        } catch (Throwable $e) {
+            $this->logger->error((string) $e);
+        }
     }
 
     public function reportFinished(
@@ -39,11 +47,16 @@ final class AppVeyorReporter implements Reporter
             'testFramework' => 'PHPUnit',
             'fileName' => $filename,
             'outcome' => $outcome,
-            'durationMilliseconds' => round($time * 1000),
+            'durationMilliseconds' => (int) round($time * 1000),
         ];
         if (null !== $error) {
             $params['ErrorMessage'] = $error;
         }
-        $this->client->execute($this->client->getCommand('updateTest', $params));
+
+        try {
+            $this->client->execute($this->client->getCommand('updateTest', $params));
+        } catch (Throwable $e) {
+            $this->logger->error((string) $e);
+        }
     }
 }

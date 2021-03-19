@@ -11,8 +11,11 @@ use PHPUnit\Runner\AfterTestFailureHook;
 use PHPUnit\Runner\AfterTestHook;
 use PHPUnit\Runner\AfterTestWarningHook;
 use PHPUnit\Runner\BeforeTestHook;
+use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use RuntimeException;
+use Symfony\Component\Console\Logger\ConsoleLogger;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Weirdan\PhpUnitAppVeyorReporter\Reporter\Factory as ReporterFactory;
 
 final class Listener implements
@@ -28,10 +31,12 @@ final class Listener implements
 {
     private bool $reported = false;
     private Reporter $reporter;
+    private LoggerInterface $logger;
 
     public function __construct()
     {
-        $this->reporter = (new ReporterFactory())();
+        $this->logger = new ConsoleLogger(new ConsoleOutput());
+        $this->reporter = (new ReporterFactory($this->logger))();
     }
 
     public function executeBeforeTest(string $test): void
