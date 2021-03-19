@@ -52,4 +52,4 @@ build_script:
 test_script:
   - vendor/bin/composer-require-checker
   - vendor/bin/psalm --shepherd
-  - vendor/bin/phpunit || echo "Ignoring failures of demo test case"
+  - vendor/bin/phpunit || (call )
