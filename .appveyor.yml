@@ -21,6 +21,7 @@ cache:
 install:
   # Download php-appveyor.psm1 module and invoke it to the current session
   - ps: (new-object Net.WebClient).DownloadString("https://raw.githubusercontent.com/sergeyklay/php-appveyor/1.3.0/php-appveyor.psm1") | iex
+  - ps: echo $ErrorActionPreference
 
   - ps: InstallPhp -Version "8.0" -BuildType "nts-Win32" -VC 16 -Platform $Env:PLATFORM
   - ps: EnablePhpExtension -Name "curl"
