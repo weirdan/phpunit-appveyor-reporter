@@ -42,6 +42,6 @@ build_script:
 
 ## Run the actual test
 test_script:
-  - ps: vendor/bin/composer-require-checker
-  - ps: vendor/bin/psalm --shepherd
-  - ps: vendor/bin/phpunit
+  - vendor/bin/composer-require-checker
+  - vendor/bin/psalm --shepherd
+  - vendor/bin/phpunit
