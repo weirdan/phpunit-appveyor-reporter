@@ -39,91 +39,43 @@ final class Listener implements
 
     public function executeBeforeTest(string $test): void
     {
-        $this->reporter->reportStarted($test, $this->testNameToFileName($test));
+        $this->reporter->reportStarted($this->stripDataset($test), $this->testNameToFileName($test));
         $this->reported = false;
     }
 
     public function executeAfterSuccessfulTest(string $test, float $time): void
     {
-        $this->reporter->reportFinished(
-            $test,
-            $this->testNameToFileName($test),
-            Reporter::OUTCOME_PASSED,
-            $time
-        );
-        $this->reported = true;
+        $this->reportCompletion($test, $time, Reporter::OUTCOME_PASSED);
     }
 
     public function executeAfterTestFailure(string $test, string $message, float $time): void
     {
-        $this->reporter->reportFinished(
-            $test,
-            $this->testNameToFileName($test),
-            Reporter::OUTCOME_FAILED,
-            $time,
-            $message
-        );
-        $this->reported = true;
+        $this->reportCompletion($test, $time, Reporter::OUTCOME_FAILED, $message);
     }
 
     public function executeAfterTestError(string $test, string $message, float $time): void
     {
-        $this->reporter->reportFinished(
-            $test,
-            $this->testNameToFileName($test),
-            Reporter::OUTCOME_FAILED,
-            $time,
-            $message
-        );
-        $this->reported = true;
+        $this->reportCompletion($test, $time, Reporter::OUTCOME_FAILED, $message);
     }
 
     public function executeAfterTestWarning(string $test, string $message, float $time): void
     {
-        $this->reporter->reportFinished(
-            $test,
-            $this->testNameToFileName($test),
-            Reporter::OUTCOME_PASSED,
-            $time,
-            $message
-        );
-        $this->reported = true;
+        $this->reportCompletion($test, $time, Reporter::OUTCOME_PASSED, $message);
     }
 
     public function executeAfterSkippedTest(string $test, string $message, float $time): void
     {
-        $this->reporter->reportFinished(
-            $test,
-            $this->testNameToFileName($test),
-            Reporter::OUTCOME_SKIPPED,
-            $time,
-            $message
-        );
-        $this->reported = true;
+        $this->reportCompletion($test, $time, Reporter::OUTCOME_SKIPPED, $message);
     }
 
     public function executeAfterIncompleteTest(string $test, string $message, float $time): void
     {
-        $this->reporter->reportFinished(
-            $test,
-            $this->testNameToFileName($test),
-            Reporter::OUTCOME_INCONCLUSIVE,
-            $time,
-            $message
-        );
-        $this->reported = true;
+        $this->reportCompletion($test, $time, Reporter::OUTCOME_INCONCLUSIVE, $message);
     }
 
     public function executeAfterRiskyTest(string $test, string $message, float $time): void
     {
-        $this->reporter->reportFinished(
-            $test,
-            $this->testNameToFileName($test),
-            Reporter::OUTCOME_PASSED,
-            $time,
-            $message
-        );
-        $this->reported = true;
+        $this->reportCompletion($test, $time, Reporter::OUTCOME_PASSED, $message);
     }
 
     public function executeAfterTest(string $test, float $time): void
@@ -131,11 +83,19 @@ final class Listener implements
         if ($this->reported) {
             return;
         }
+        $this->reportCompletion($test, $time, Reporter::OUTCOME_INCONCLUSIVE);
+    }
+
+
+    /** @param Reporter::OUTCOME_* $outcome */
+    private function reportCompletion(string $test, float $time, string $outcome, ?string $message = null): void
+    {
         $this->reporter->reportFinished(
-            $test,
+            $this->stripDataset($test),
             $this->testNameToFileName($test),
-            Reporter::OUTCOME_INCONCLUSIVE,
-            $time
+            $outcome,
+            $time,
+            $message
         );
         $this->reported = true;
     }
@@ -150,5 +110,16 @@ final class Listener implements
 
         $class = new ReflectionClass($className);
         return $class->getFileName();
+    }
+
+    private function stripDataset(string $test): string
+    {
+        if (preg_match('/^.* with data set ".*"/U', $test, $matches)) {
+            return $matches[0];
+        }
+        if (preg_match('/^.* with data set #\d+/U', $test, $matches)) {
+            return $matches[0];
+        }
+        return $test;
     }
 }
